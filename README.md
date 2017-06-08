@@ -11,4 +11,4 @@ Check http://ccwu.me/vsfm/
 
 ## Warning
 
-This repository just exists to help you (and it's from source pull 2 years ago). I don't accept pull requests. I don't even have an nvidia card at the moment.
+This repository just exists to help you (and it's from source that is 2 years old!). I don't accept pull requests. I don't even have an nvidia card at the moment.
