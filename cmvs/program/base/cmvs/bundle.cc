@@ -13,6 +13,9 @@ using namespace boost;
 using namespace CMVS;
 
 Cbundle::Cbundle(void) {
+  outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and Cbundle(void)";
+  outfile.close();
   m_CPU = 8;
   m_junit = 100;
   pthread_rwlock_init(&m_lock, NULL);
@@ -22,12 +25,18 @@ Cbundle::Cbundle(void) {
 }
 
 Cbundle::~Cbundle() {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and ~Cbundle(void)";
+  outfile.close();
 }
 
 void Cbundle::prep(const std::string prefix, const int imageThreshold,
                    const int tau, const float scoreRatioThreshold,
                    const float coverageThreshold,
                    const int pnumThreshold, const int CPU) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and prep";
+  outfile.close();
   if (pnumThreshold != 0) {
     cerr << "Should use pnumThreshold = 0" << endl;
     exit (1);
@@ -66,7 +75,11 @@ void Cbundle::prep(const std::string prefix, const int imageThreshold,
 }
 
 void Cbundle::prep2(void) {
+ 
   // Used in mergeSfMP now.
+  outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and prep2";
+  outfile.close();
   {
     m_pweights.resize((int)m_coords.size(), 1);
     m_sfms2.resize((int)m_coords.size());
@@ -116,6 +129,9 @@ void Cbundle::run(const std::string prefix, const int imageThreshold,
                   const int tau, const float scoreRatioThreshold,
                   const float coverageThreshold,
                   const int pnumThreshold, const int CPU) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and run";
+  outfile.close();
   startTimer();
   
   prep(prefix, imageThreshold, tau, scoreRatioThreshold,
@@ -171,6 +187,9 @@ void Cbundle::run(const std::string prefix, const int imageThreshold,
 }
 
 float Cbundle::computeLink(const int image0, const int image1) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and computelink";
+  outfile.close();
   vector<int> common;
   set_intersection(m_vpoints[image0].begin(), m_vpoints[image0].end(),
                    m_vpoints[image1].begin(), m_vpoints[image1].end(),
@@ -191,6 +210,9 @@ float Cbundle::computeLink(const int image0, const int image1) {
 }
 
 void Cbundle::slimNeighborsSetLinks(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and slimneighboursetlink)";
+  outfile.close();
   const int maxneighbor = 30;
   m_links.clear();
   m_links.resize(m_cnum);
@@ -225,6 +247,9 @@ void Cbundle::slimNeighborsSetLinks(void) {
 }
 
 void Cbundle::setScoreThresholds(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and setscorethresholds";
+  outfile.close();
 #pragma omp parallel for
   for (int p = 0; p < (int)m_coords.size(); ++p) {
     m_sfms2[p].m_scoreThreshold =
@@ -234,6 +259,9 @@ void Cbundle::setScoreThresholds(void) {
 }
 
 void Cbundle::sRemoveImages(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and sremoveimages";
+  outfile.close();
   m_removed.clear();
   m_removed.resize(m_cnum, 0);
     
@@ -279,6 +307,9 @@ void Cbundle::sRemoveImages(void) {
 }
 
 void Cbundle::resetVisibles(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and resetvisibilities";
+  outfile.close();
   // reset m_visibles. remove "removed images" from the list.
   for (int p = 0; p < (int)m_visibles.size(); ++p) {
     vector<int> newimages;
@@ -290,6 +321,9 @@ void Cbundle::resetVisibles(void) {
 
 void Cbundle::setNewImages(const int pid, const int rimage,
                            std::vector<int>& newimages) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and setnewimages";
+  outfile.close();
   for (int i = 0; i < (int)m_visibles[pid].size(); ++i) {
     const int image = m_visibles[pid][i];
     if (m_removed[image] || image == rimage)
@@ -303,6 +337,9 @@ void Cbundle::checkImage(const int image) {
   //  0: unsatisfy
   //  1: satisfy->satisfy
   //  2: satisfy->unsatisfy
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and checkimage";
+  outfile.close();
   m_statsT.resize((int)m_vpoints[image].size());
   m_jobs.clear();
   
@@ -402,6 +439,9 @@ void Cbundle::checkImage(const int image) {
 }
 
 void Cbundle::setNeighbors(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and setneighbours";
+  outfile.close();
   m_neighbors.clear();
   m_neighbors.resize(m_cnum);
 #pragma omp parallel for
@@ -425,6 +465,9 @@ void Cbundle::setNeighbors(void) {
 }
 
 void Cbundle::setTimages(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and setimages(void)";
+  outfile.close();
   vector<int> lhs;
   for (int c = 0; c < m_cnum; ++c)
     if (m_removed[c] == 0)
@@ -445,6 +488,9 @@ void Cbundle::setTimages(void) {
 
 void Cbundle::divideImages(const std::vector<int>& lhs,
                            std::vector<std::vector<int> >& rhs) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and divideimages(void)";
+  outfile.close();
   const float iratio = 125.0f / 150.0f;
   // Candidates
   list<vector<int> > candidates;
@@ -527,6 +573,9 @@ void Cbundle::divideImages(const std::vector<int>& lhs,
 }
 
 void Cbundle::readBundle(const std::string file) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and readbundle";
+  outfile.close();
   // For each valid image, a list of connected images, and the second
   // value is the number of common points.
   ifstream ifstr;  ifstr.open(file.c_str());
@@ -615,6 +664,9 @@ void Cbundle::readBundle(const std::string file) {
 
 void Cbundle::findPNeighbors(sfcnn<const float*, 3, float>& tree,
                              const int pid, std::vector<int>& pneighbors) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and findPneighbours";
+  outfile.close();
   const float thresh = m_dscale2 * m_dscale2 *
     m_minScales[pid] * m_minScales[pid];
 
@@ -651,6 +703,9 @@ void Cbundle::findPNeighbors(sfcnn<const float*, 3, float>& tree,
 }
 
 void Cbundle::mergeSfMPThread(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and mergeSfMPThread";
+  outfile.close();
   const int tenth = (int)m_coords.size() / 10;
   while (1) {
     int pid = -1;
@@ -710,11 +765,17 @@ void Cbundle::mergeSfMPThread(void) {
 }
 
 void* Cbundle::mergeSfMPThreadTmp(void* arg) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and mergeSfMPThreadTmp";
+  outfile.close();
   ((Cbundle*)arg)->mergeSfMPThread();
   return NULL;
 }
 
 void Cbundle::mergeSfMP(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and mergeSfMP";
+  outfile.close();
   // Repeat certain times until no change
   const int cpnum = (int)m_coords.size();
   m_minScales.resize(cpnum);
@@ -791,6 +852,9 @@ void Cbundle::mergeSfMP(void) {
 
 // Based on m_puf, reset m_coords, m_coords, m_visibles, m_vpoints
 void Cbundle::resetPoints(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and resetpoints";
+  outfile.close();
   vector<int> counts;
   vector<int> smallestids;
   counts.resize((int)m_coords.size(), 0);
@@ -851,6 +915,9 @@ void Cbundle::resetPoints(void) {
 }
 
 void Cbundle::setScoresClusters(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and setscoresclusters";
+  outfile.close();
 #pragma omp parallel for
   for (int p = 0; p < (int)m_coords.size(); ++p) {
     // if m_satisfied is 0, no hope (even all the images are in the
@@ -864,6 +931,9 @@ void Cbundle::setScoresClusters(void) {
 }
 
 void Cbundle::setCluster(const int p) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and setcluster";
+  outfile.close();
   m_sfms2[p].m_score = -1.0f;
   m_sfms2[p].m_cluster = -1;
   for (int c = 0; c < (int)m_timages.size(); ++c) {
@@ -919,6 +989,9 @@ void Cbundle::setCluster(const int p) {
 }
 
 float Cbundle::angleScore(const Vec4f& ray0, const Vec4f& ray1) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and anglescore";
+  outfile.close();
   const static float lsigma = 5.0f * M_PI / 180.f;
   const static float rsigma = 15.0f * M_PI / 180.0f;
   const static float lsigma2 = 2.0f * lsigma * lsigma;
@@ -935,6 +1008,9 @@ float Cbundle::angleScore(const Vec4f& ray0, const Vec4f& ray1) {
 }
 
 void Cbundle::setClusters(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and setclusters";
+  outfile.close();
 #pragma omp parallel for
   for (int p = 0; p < (int)m_sfms2.size(); ++p) {
     if (m_sfms2[p].m_satisfied != 2)
@@ -945,6 +1021,9 @@ void Cbundle::setClusters(void) {
 }
 
 void Cbundle::addImagesP(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and addimagesp";
+  outfile.close();
   // set m_lacks (how many more sfm points need to be satisfied)
   m_lacks.resize(m_cnum);
   for (int c = 0; c < m_cnum; ++c) {
@@ -1004,6 +1083,9 @@ void Cbundle::addImagesP(void) {
 }
 
 int Cbundle::addImages(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and addimages";
+  outfile.close();
   m_thread = 0;
   m_jobs.clear();
   
@@ -1075,6 +1157,9 @@ int Cbundle::addImages(void) {
 }
 
 int Cbundle::addImagesSub(const std::vector<std::map<int, float> >& cands) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and addimagessub";
+  outfile.close();
   // Vec3f (gain, cluster, image). Start adding starting from the good
   // one, block neighboring images.
   vector<Vec3f> cands2;
@@ -1135,6 +1220,9 @@ int Cbundle::addImagesSub(const std::vector<std::map<int, float> >& cands) {
 }
 
 int Cbundle::totalNum(void) const{
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and totalnum";
+  outfile.close();
   int totalnum = 0;
   for (int c = 0; c < (int)m_timages.size(); ++c)
     totalnum += (int)m_timages[c].size();
@@ -1143,6 +1231,9 @@ int Cbundle::totalNum(void) const{
 
 int Cbundle::my_isIntersect(const std::vector<int>& lhs,
                             const std::vector<int>& rhs) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and my_isIntersect";
+  outfile.close();
   vector<int>::const_iterator b0 = lhs.begin();
   vector<int>::const_iterator e0 = lhs.end();
 
@@ -1168,6 +1259,9 @@ int Cbundle::my_isIntersect(const std::vector<int>& lhs,
 void Cbundle::mymerge(const std::vector<int>& lhs,
                       const std::vector<int>& rhs,
                       std::vector<int>& output) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and mymerge";
+  outfile.close();
   vector<int>::const_iterator b0 = lhs.begin();
   vector<int>::const_iterator e0 = lhs.end();
 
@@ -1201,6 +1295,9 @@ void Cbundle::mymerge(const std::vector<int>& lhs,
 }
 
 void Cbundle::setWidthsHeightsLevels(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and setwidthsheightslevels";
+  outfile.close();
   m_widths.resize(m_cnum);
   m_heights.resize(m_cnum);
   m_levels.resize(m_cnum);
@@ -1216,6 +1313,9 @@ void Cbundle::setWidthsHeightsLevels(void) {
  
 float Cbundle::computeScore2(const Vec4f& coord,
                              const std::vector<int>& images) const {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and computescore2(const Vec4f& coord,const std::vector<int>& images) const";
+  outfile.close();
   vector<int> uimages;
   return computeScore2(coord, images, uimages);
 }
@@ -1223,6 +1323,9 @@ float Cbundle::computeScore2(const Vec4f& coord,
 float Cbundle::computeScore2(const Vec4f& coord,
                              const std::vector<int>& images,
                              std::vector<int>& uimages) const {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and computescore2(const Vec4f& coord,const std::vector<int>& images,std::vector<int>& uimages) const";
+  outfile.close();
   const int inum = (int)images.size();
   uimages.clear();
   if (inum < 2)
@@ -1292,6 +1395,9 @@ float Cbundle::computeScore2(const Vec4f& coord,
 float Cbundle::computeScore2(const Vec4f& coord,
                              const std::vector<int>& images,
                              const int index) const {
+  outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and computescore2(const Vec4f& coord, const std::vector<int>& images,const int index) const";
+  outfile.close();
   vector<int> uimages;
   const int inum = (int)images.size();
   if (inum < 2)
@@ -1342,7 +1448,9 @@ float Cbundle::computeScore2(const Vec4f& coord,
   return bestscore;
 }
 
-void Cbundle::writeVis(void) {
+void Cbundle::writeVis(void) { outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and writevis";
+  outfile.close();
   ofstream ofstr;
   char buffer[1024];
   sprintf(buffer, "%svis.dat", m_prefix.c_str());
@@ -1375,6 +1483,9 @@ void Cbundle::writeVis(void) {
 }
 
 void Cbundle::writeCameraCenters(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and writecameracenters";
+  outfile.close();
   for (int i = 0; i < (int)m_timages.size(); ++i) {
     char buffer[1024];
     sprintf(buffer, "%scenters-%04d.ply", m_prefix.c_str(), i);
@@ -1428,6 +1539,9 @@ void Cbundle::writeCameraCenters(void) {
 }
 
 void Cbundle::writeGroups(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and writegroups";
+  outfile.close();
   char buffer[1024];
   sprintf(buffer, "%sske.dat", m_prefix.c_str());
   ofstream ofstr;
@@ -1448,11 +1562,17 @@ void Cbundle::writeGroups(void) {
 }
 
 void Cbundle::startTimer(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and starttimer";
+  outfile.close();
   gettimeofday(&m_tv, NULL); 
   m_curtime = m_tv.tv_sec;
 }
 
 time_t Cbundle::curTimer(void) {
+   outfile.open("logfile.txt");
+  outfile<<"Executing bundle.cc and curtimer";
+  outfile.close();
   gettimeofday(&m_tv, NULL); 
   return m_tv.tv_sec - m_curtime;
 }
